@@ -12,12 +12,13 @@ class ViewController: UIViewController {
     @IBOutlet var tableView:UITableView!
     
     var tasks = [String]()
+    var numbers = [String]()
     
     var index = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Tasks"
+        self.title = "Contacts"
         
         tableView.delegate = self;
         tableView.dataSource = self;
@@ -34,6 +35,7 @@ class ViewController: UIViewController {
     func updateTasks(){
         
         tasks.removeAll()
+        numbers.removeAll()
          
        guard let count = UserDefaults().value(forKey: "count") as? Int else {
             return
@@ -43,6 +45,10 @@ class ViewController: UIViewController {
             if let task = UserDefaults().value(forKey: "task_\(x+1)") as? String{
                 tasks.append(task)
             }
+            if let number = UserDefaults().value(forKey: "number_\(x+1)") as? String{
+                numbers.append(number)
+            }
+            
             
         }
         tableView.reloadData()
@@ -50,7 +56,7 @@ class ViewController: UIViewController {
     }
     @IBAction func didTapAdd(){
         let vc = storyboard?.instantiateViewController(identifier: "entry") as! EntryViewController
-        vc.title = "New Task"
+        vc.title = "Add Contact"
         
         vc.update = {
             DispatchQueue.main.async {
@@ -67,9 +73,10 @@ class ViewController: UIViewController {
             tableView.deselectRow(at: indexPath, animated: true)
             
             let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
-            vc.title = "New Task"
+            vc.title = tasks[indexPath.row]
             vc.index = indexPath.row
             vc.task = tasks[indexPath.row]
+            vc.number = numbers[indexPath.row]
             vc.update = {
                 DispatchQueue.main.async {
                     self.updateTasks()
@@ -90,7 +97,6 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = tasks[indexPath.row]
-        index =  indexPath.row
         return cell
     }
 }

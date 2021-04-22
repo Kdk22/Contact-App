@@ -10,16 +10,18 @@ import UIKit
 class TaskViewController: UIViewController {
     
     @IBOutlet var label: UILabel!
+    @IBOutlet var numberlabel: UILabel!
     
     var task: String?
     var index = 0
+    var number: String?
     
     var update: (() -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        label.text = task
+        label.text = "Name: \(task!)"
+        numberlabel.text = "Phone Number: \(number!)"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title:"Delete", style: .done, target: self, action:#selector(deleteTask))
 
@@ -35,6 +37,7 @@ class TaskViewController: UIViewController {
         let current = index + 1
         UserDefaults().setValue(newCount, forKey: "count")
         UserDefaults().setValue(nil, forKey: "task_\(current)")
+        UserDefaults().set(nil, forKey: "number_\(current)")
         
         update?()
         
