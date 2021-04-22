@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     var tasks = [String]()
     
+    var index = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Tasks"
@@ -63,20 +65,37 @@ class ViewController: UIViewController {
         func tableView(_ tableView:UITableView,
                        didSelectRowAt indexPath: IndexPath){
             tableView.deselectRow(at: indexPath, animated: true)
+            
+            let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
+            vc.title = "New Task"
+            vc.index = indexPath.row
+            vc.task = tasks[indexPath.row]
+            vc.update = {
+                DispatchQueue.main.async {
+                    self.updateTasks()
+                }
+            }
+            
+            navigationController?.pushViewController(vc, animated: true)
+            
         }
     }
 extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return tasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = tasks[indexPath.row]
+        index =  indexPath.row
         return cell
     }
 }
+
+
 
 
 
